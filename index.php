@@ -77,5 +77,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['original_url'])) {
         </div>
     </div>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<ins class="kakao_ad_area" style="display:none;"
+data-ad-unit = "DAN-Y0ZNLuIjfBEOujr3"
+data-ad-width = "300"
+data-ad-height = "250"></ins>
+<script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+
 </body>
 </html>
