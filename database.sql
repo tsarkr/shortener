@@ -1,0 +1,34 @@
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('admin', 'user') DEFAULT 'user',
+    is_approved BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE login_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    logout_time TIMESTAMP NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE urls (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    original_url VARCHAR(2048) NOT NULL,
+    short_code VARCHAR(255) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    click_count INT DEFAULT 0
+);
+
+CREATE TABLE url_clicks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    url_id INT NOT NULL,
+    click_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    referer VARCHAR(1024) NULL,
+    user_agent VARCHAR(1024) NULL,
+    ip_address VARCHAR(45) NULL,
+    CONSTRAINT fk_url_clicks_url_id FOREIGN KEY (url_id) REFERENCES urls(id) ON DELETE CASCADE
+);

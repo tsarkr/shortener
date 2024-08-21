@@ -1,0 +1,4 @@
+RewriteEngine On
+
+# 기본 리디렉션 설정
+RewriteRule ^([a-zA-Z0-9]{6})$ redirect.php?code=$1 [L]
