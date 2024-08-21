@@ -26,7 +26,7 @@
             background-color: white;
             border-radius: 8px;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-            max-width: 850px;  /* 전체 문서의 최대 폭을 줄였습니다 */
+            max-width: 850px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -51,23 +51,6 @@
             font-size: 18px;
             color: #007bff;
         }
-        .back-button {
-            margin-top: 30px;
-            text-align: center;
-        }
-        /* 왼쪽에 광고 위치 */
-        .left-ad {
-            position: fixed;
-            top: 100px;
-            left: 0;
-            width: 300px;  /* 광고의 너비 */
-            height: 250px; /* 광고의 높이 */
-            background-color: #f1f1f1;
-            padding: 10px;
-            text-align: center;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        /* QR 코드 무상 제공 강조 */
         .qr-highlight {
             background-color: #ffeb3b;
             padding: 15px;
@@ -78,12 +61,50 @@
             font-weight: bold;
             text-align: center;
         }
+        .back-button {
+            margin-top: 30px;
+            text-align: center;
+        }
+        /* 왼쪽에 광고 위치 */
+        .left-ad {
+            position: fixed;
+            top: 100px;
+            left: 0;
+            width: 300px;
+            height: 250px;
+            background-color: #f1f1f1;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        /* 닫기 버튼 스타일 */
+        .close-ad {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 5px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        @media (max-width: 576px) {
+            .left-ad {
+                width: 100%;
+                height: auto;
+                top: 0;
+                left: 0;
+                box-shadow: none;
+            }
+        }
     </style>
 </head>
 <body>
 
     <!-- 왼쪽에 광고 위치 -->
-    <div class="left-ad">
+    <div class="left-ad" id="adContainer">
+        <button class="close-ad" onclick="closeAd()">X</button>
         <ins class="kakao_ad_area" style="display:none;"
         data-ad-unit="DAN-Y0ZNLuIjfBEOujr3"
         data-ad-width="300"
@@ -145,5 +166,11 @@
     </div>
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function closeAd() {
+            document.getElementById('adContainer').style.display = 'none';
+        }
+    </script>
 </body>
 </html>

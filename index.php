@@ -88,18 +88,16 @@
         .ad-container {
             width: 100%;
             text-align: center;
-            position: fixed;
-            bottom: 0;
-            left: 0;
             background-color: #fff;
             padding: 10px 0;
+            margin-top: 20px;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 1;
         }
         ins.kakao_ad_area {
             display: block;
-            width: 100%;
-            height: 250px;
+            width: 320px;
+            height: 100px;
+            margin: 0 auto;
         }
         @media (max-width: 576px) {
             .shortener-box {
@@ -145,15 +143,15 @@
             <div class="footer-links">
                 <a href="aboutus.html">서비스 설명</a>
             </div>
-        </div>
-    </div>
 
-    <div class="ad-container">
-        <ins class="kakao_ad_area" style="display:block;"
-        data-ad-unit="DAN-Y0ZNLuIjfBEOujr3"
-        data-ad-width="300"
-        data-ad-height="250"></ins>
-        <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+            <div class="ad-container">
+                <ins class="kakao_ad_area" style="display:block;"
+                data-ad-unit="DAN-bes5g23P3OzvDBK4"
+                data-ad-width="320"
+                data-ad-height="100"></ins>
+                <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+            </div>
+        </div>
     </div>
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
