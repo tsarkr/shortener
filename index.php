@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>URL 단축기</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-N88DTJJQ');</script>
+    <!-- End Google Tag Manager -->
+    
     <style>
         body, html {
             height: 100%;
@@ -16,8 +25,8 @@
             flex: 1;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* 위쪽 여백을 줄이기 위해 flex-start로 변경 */
-            padding-top: 20px; /* 위쪽 여백을 20px로 설정 */
+            align-items: flex-start;
+            padding-top: 20px;
             margin-bottom: 0;
         }
         .shortener-box {
@@ -27,7 +36,7 @@
             border-radius: 10px;
             background-color: #f8f9fa;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            position: relative; /* 콘텐츠가 광고 위로 올라오도록 설정 */
+            position: relative;
             z-index: 2;
         }
         .instructions {
@@ -46,7 +55,6 @@
         .footer-links a:hover {
             text-decoration: underline;
         }
-        /* 광고 배너를 하단에 고정하고 콘텐츠 아래로 보이도록 설정 */
         .ad-container {
             width: 100%;
             text-align: center;
@@ -56,14 +64,13 @@
             background-color: #fff;
             padding: 10px 0;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 1; /* 광고가 콘텐츠 아래에 있도록 설정 */
+            z-index: 1;
         }
         ins.kakao_ad_area {
             display: block;
             width: 100%;
-            height: 250px; /* 고정된 높이 */
+            height: 250px;
         }
-        /* 반응형 미디어 쿼리 */
         @media (max-width: 576px) {
             .shortener-box {
                 padding: 15px;
@@ -75,11 +82,15 @@
     </style>
 </head>
 <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N88DTJJQ"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    
     <div class="container shortener-container">
         <div class="shortener-box">
             <h1 class="mb-4 text-center">URL 단축기</h1>
             <p class="text-center">아래에 긴 URL을 입력하고 단축 버튼을 누르세요.</p>
-            <!-- 사용 방법 설명 추가 -->
             <div class="instructions">
                 <ul>
                     <li>URL을 입력할 때 <code>http://</code> 또는 <code>https://</code>는 자동으로 처리됩니다.</li>
@@ -94,14 +105,12 @@
                 <button type="submit" class="btn btn-primary btn-block">단축</button>
             </form>
 
-            <!-- 하단 링크 추가 -->
             <div class="footer-links">
-                <a href="aboutus.html">서비스 설명</a> <!-- aboutus.html 링크 추가 -->
+                <a href="aboutus.html">서비스 설명</a>
             </div>
         </div>
     </div>
 
-    <!-- 광고 배너가 페이지 하단에 고정되며 콘텐츠 아래에 깔림 -->
     <div class="ad-container">
         <ins class="kakao_ad_area" style="display:block;"
         data-ad-unit="DAN-Y0ZNLuIjfBEOujr3"
