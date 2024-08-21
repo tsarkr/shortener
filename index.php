@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>11e.kr | URL 단축기 - 빠르고 쉬운 URL 단축 서비스</title>
     
+    <!-- Meta Description for Naver -->
+    <meta name="naver-site-verification" content="5bbdc3d224a84d88022aa9a34c8db8671916589c" />
+
     <!-- Meta Description for SEO -->
     <meta name="description" content="11e.kr에서 긴 URL을 짧고 간결한 링크로 변환하세요. 무료로 제공되는 QR 코드와 클릭 통계까지 확인할 수 있습니다.">
     
