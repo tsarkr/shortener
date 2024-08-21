@@ -1,140 +1,114 @@
-<?php
-include 'database.php';
-
-// URL 정리 함수
-function cleanUrl($url) {
-    // 입력된 URL 앞뒤 공백 제거
-    $url = trim($url);
-
-    // http:// 또는 https://로 시작하지 않는 경우 기본적으로 http:// 추가
-    if (!preg_match('#^https?://#', $url)) {
-        $url = 'http://' . $url;
-    }
-
-    return $url;
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['original_url'])) {
-    $original_url = cleanUrl($_POST['original_url']);  // URL 정리 함수 적용
-
-    // 기존 URL 확인
-    $stmt = $pdo->prepare("SELECT short_code FROM urls WHERE original_url = :original_url");
-    $stmt->execute(['original_url' => $original_url]);
-    $existing_url = $stmt->fetch();
-
-    if ($existing_url) {
-        // 기존 단축 URL이 존재하는 경우 해당 URL 반환
-        $short_code = $existing_url['short_code'];
-    } else {
-        // 새로운 단축 URL 생성
-        $short_code = substr(md5(uniqid(rand(), true)), 0, 6);  // 예시로 6자리 코드 생성
-        $stmt = $pdo->prepare("INSERT INTO urls (original_url, short_code) VALUES (:original_url, :short_code)");
-        $stmt->execute(['original_url' => $original_url, 'short_code' => $short_code]);
-    }
-
-    // 단축된 URL 표시
-    $shortened_url = "http://11e.kr/" . $short_code;
-}
-?>
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>URL 단축 결과</title>
+    <title>URL 단축 결과 | URL 단축기</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body, html {
             height: 100%;
-            background-color: #f7f9fc;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
         }
-        .result-container {
-            height: 100%;
+        .shortener-container {
+            flex: 1;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* 위쪽 여백을 줄이기 위해 flex-start로 설정 */
+            padding-top: 20px; /* 위쪽 여백을 20px로 설정 */
+            margin-bottom: 0;
+        }
+        .shortener-box {
+            width: 100%;
+            max-width: 500px;
             padding: 20px;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            position: relative; /* 콘텐츠가 광고 위로 올라오도록 설정 */
+            z-index: 2;
         }
         .result-box {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 500px;
-            width: 100%;
+            font-size: 16px;
+            margin-bottom: 20px;
         }
-        .short-url-input {
-            font-size: 1.1rem;
-            text-align: center;
-            border-radius: 5px 0 0 5px;
-        }
-        .copy-btn {
-            background-color: #007bff;
-            color: white;
-            border-radius: 0 5px 5px 0;
-            transition: background-color 0.3s ease;
-            height: 100%;
-            padding: 10px 20px;
-            border: none;
-        }
-        .copy-btn:hover {
-            background-color: #0056b3;
-        }
-        #copySuccessMessage {
-            margin-top: 15px;
-            color: #28a745;
-            font-size: 0.9rem;
-        }
-        .back-btn {
+        .footer-links {
             margin-top: 20px;
-            background-color: #6c757d;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            display: inline-block;
-            transition: background-color 0.3s ease;
+            text-align: center;
         }
-        .back-btn:hover {
-            background-color: #5a6268;
+        .footer-links a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        /* 광고 배너를 하단에 고정하고 콘텐츠 아래로 보이도록 설정 */
+        .ad-container {
+            width: 100%;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            background-color: #fff;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1; /* 광고가 콘텐츠 아래에 있도록 설정 */
+        }
+        ins.kakao_ad_area {
+            display: block;
+            width: 100%;
+            height: 250px; /* 고정된 높이 */
+        }
+        /* 반응형 미디어 쿼리 */
+        @media (max-width: 576px) {
+            .shortener-box {
+                padding: 15px;
+            }
+            .result-box {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container result-container">
-        <div class="result-box">
-            <h3 class="mb-4">URL이 성공적으로 단축되었습니다!</h3>
-            <p>아래 버튼을 클릭하여 단축된 URL을 클립보드에 복사하세요:</p>
-            <div class="input-group mb-3">
-                <input type="text" id="shortenedUrl" class="form-control short-url-input" value="<?= htmlspecialchars($shortened_url) ?>" readonly>
-                <div class="input-group-append">
-                    <button class="btn copy-btn" onclick="copyToClipboard()">복사</button>
-                </div>
+    <div class="container shortener-container">
+        <div class="shortener-box">
+            <h1 class="mb-4 text-center">URL 단축 결과</h1>
+            <p class="text-center">아래에 생성된 단축 URL을 확인하세요.</p>
+            <div class="result-box">
+                <p><strong>단축된 URL:</strong> <a href="shortened_url">shortened_url</a></p>
+                <button class="btn btn-secondary" onclick="copyToClipboard('shortened_url')">클립보드에 복사</button>
             </div>
-            <div id="copySuccessMessage" style="display: none;">URL이 클립보드에 복사되었습니다!</div>
-            <a href="index.php" class="back-btn">메인 페이지로 돌아가기</a>
+            <!-- 하단 링크 추가 -->
+            <div class="footer-links">
+                <a href="index.php">메인 페이지로 돌아가기</a>
+            </div>
         </div>
     </div>
 
+    <!-- 광고 배너가 페이지 하단에 고정되며 콘텐츠 아래에 깔림 -->
+    <div class="ad-container">
+        <ins class="kakao_ad_area" style="display:block;"
+        data-ad-unit="DAN-Y0ZNLuIjfBEOujr3"
+        data-ad-width="300"
+        data-ad-height="250"></ins>
+        <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script>
-        function copyToClipboard() {
-            var copyText = document.getElementById("shortenedUrl");
-            copyText.select();
-            copyText.setSelectionRange(0, 99999); // 모바일 대응
+        function copyToClipboard(text) {
+            var dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = text;
+            dummy.select();
             document.execCommand("copy");
-
-            // 성공 메시지 표시
-            var successMessage = document.getElementById("copySuccessMessage");
-            successMessage.style.display = "block";
-
-            // 잠시 후 성공 메시지 숨기기
-            setTimeout(function() {
-                successMessage.style.display = "none";
-            }, 2000);
+            document.body.removeChild(dummy);
+            alert("클립보드에 복사되었습니다: " + text);
         }
     </script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

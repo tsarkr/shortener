@@ -1,28 +1,3 @@
-<?php
-include 'database.php';
-
-// URL 정리 함수 추가
-function cleanUrl($url) {
-    // 입력된 URL에서 http:// 또는 https://를 찾아 제거한 후 다시 추가
-    $url = trim($url);
-    if (stripos($url, 'http://') === 0) {
-        $url = substr($url, 7);  // http:// 제거
-    } elseif (stripos($url, 'https://') === 0) {
-        $url = substr($url, 8);  // https:// 제거
-    }
-    // http:// 또는 https://가 없는 경우 기본적으로 http://를 추가
-    return 'http://' . $url;
-}
-
-// URL 단축 처리
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['original_url'])) {
-    $original_url = cleanUrl($_POST['original_url']);  // URL 정리 함수 적용
-
-    // 이후 기존의 URL 단축 처리 로직을 여기에 추가합니다.
-    // 예: 데이터베이스에 저장, 단축 URL 생성 등.
-}
-?>
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -33,25 +8,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['original_url'])) {
     <style>
         body, html {
             height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
         }
         .shortener-container {
-            height: 100%;
+            flex: 1;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* 위쪽 여백을 줄이기 위해 flex-start로 변경 */
+            padding-top: 20px; /* 위쪽 여백을 20px로 설정 */
+            margin-bottom: 0;
         }
         .shortener-box {
             width: 100%;
             max-width: 500px;
-            padding: 30px;
+            padding: 20px;
             border-radius: 10px;
             background-color: #f8f9fa;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            position: relative; /* 콘텐츠가 광고 위로 올라오도록 설정 */
+            z-index: 2;
         }
         .instructions {
             font-size: 14px;
             color: #6c757d;
             margin-bottom: 20px;
+        }
+        .footer-links {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .footer-links a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        /* 광고 배너를 하단에 고정하고 콘텐츠 아래로 보이도록 설정 */
+        .ad-container {
+            width: 100%;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            background-color: #fff;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1; /* 광고가 콘텐츠 아래에 있도록 설정 */
+        }
+        ins.kakao_ad_area {
+            display: block;
+            width: 100%;
+            height: 250px; /* 고정된 높이 */
+        }
+        /* 반응형 미디어 쿼리 */
+        @media (max-width: 576px) {
+            .shortener-box {
+                padding: 15px;
+            }
+            .instructions {
+                font-size: 12px;
+            }
         }
     </style>
 </head>
@@ -68,21 +87,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['original_url'])) {
                     <li>단축된 URL은 더 짧고 공유하기 쉬운 링크로 제공됩니다.</li>
                 </ul>
             </div>
-            <form method="POST" action="shorten.php">  <!-- 액션 추가 -->
+            <form method="POST" action="shorten.php">
                 <div class="form-group">
                     <input type="text" name="original_url" class="form-control" placeholder="URL을 입력하세요" required>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">단축</button>
             </form>
+
+            <!-- 하단 링크 추가 -->
+            <div class="footer-links">
+                <a href="aboutus.html">서비스 설명</a> <!-- aboutus.html 링크 추가 -->
+            </div>
         </div>
     </div>
+
+    <!-- 광고 배너가 페이지 하단에 고정되며 콘텐츠 아래에 깔림 -->
+    <div class="ad-container">
+        <ins class="kakao_ad_area" style="display:block;"
+        data-ad-unit="DAN-Y0ZNLuIjfBEOujr3"
+        data-ad-width="300"
+        data-ad-height="250"></ins>
+        <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+    </div>
+
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
-<ins class="kakao_ad_area" style="display:none;"
-data-ad-unit = "DAN-Y0ZNLuIjfBEOujr3"
-data-ad-width = "300"
-data-ad-height = "250"></ins>
-<script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
-
 </body>
 </html>
