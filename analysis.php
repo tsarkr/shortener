@@ -78,7 +78,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <div class="container mt-5">
-        <h2>단축 URL 분석</h2>
+        <div class="d-flex justify-content-between mb-3">
+            <h2>단축 URL 분석</h2>
+            <a href="logout.php" class="btn btn-danger">로그아웃</a>
+        </div>
         <table class="table table-striped">
             <thead>
                 <tr>

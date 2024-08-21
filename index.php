@@ -44,6 +44,14 @@
             color: #6c757d;
             margin-bottom: 20px;
         }
+        .highlight {
+            background-color: #e7f1ff;
+            padding: 15px;
+            border-left: 5px solid #007bff;
+            font-size: 16px;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
         .footer-links {
             margin-top: 20px;
             text-align: center;
@@ -96,8 +104,15 @@
                     <li>URL을 입력할 때 <code>http://</code> 또는 <code>https://</code>는 자동으로 처리됩니다.</li>
                     <li>입력된 URL이 올바른 형식인지 확인하세요.</li>
                     <li>단축된 URL은 더 짧고 공유하기 쉬운 링크로 제공됩니다.</li>
+                    <li><strong>추가 혜택:</strong> 생성된 단축 URL과 함께 QR 코드도 무상으로 제공됩니다!</li>
                 </ul>
             </div>
+
+            <!-- 통계 서비스 설명 추가 -->
+            <div class="highlight">
+                <p>생성된 단축 URL의 통계 데이터를 확인할 수 있습니다. 단축 URL 뒤에 <code>*</code>를 추가하여 클릭 수, 유입 경로, 브라우저 정보 등의 통계 데이터를 실시간으로 확인하세요. 예시: <code>https://11e.kr/abc123*</code></p>
+            </div>
+
             <form method="POST" action="shorten.php">
                 <div class="form-group">
                     <input type="text" name="original_url" class="form-control" placeholder="URL을 입력하세요" required>

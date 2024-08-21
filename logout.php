@@ -1,14 +1,22 @@
 <?php
 session_start();
-include 'database.php';
 
-if (isset($_SESSION['admin_id'])) {
-    // 로그아웃 시간 기록
-    $stmt = $pdo->prepare("UPDATE login_logs SET logout_time = NOW() WHERE admin_id = :admin_id ORDER BY login_time DESC LIMIT 1");
-    $stmt->execute(['admin_id' => $_SESSION['admin_id']]);
+// 모든 세션 변수 해제
+$_SESSION = array();
+
+// 세션 쿠키 삭제
+if (ini_get("session.use_cookies")) {
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+    );
 }
 
+// 세션 파괴
 session_destroy();
-header('Location: login.php');
+
+// 로그아웃 후 로그인 페이지로 리디렉션
+header("Location: login.php");
 exit;
 ?>

@@ -26,6 +26,9 @@
             background-color: white;
             border-radius: 8px;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 850px;  /* 전체 문서의 최대 폭을 줄였습니다 */
+            margin-left: auto;
+            margin-right: auto;
         }
         .content h2 {
             margin-top: 20px;
@@ -40,13 +43,53 @@
         .content ul, .content ol {
             margin-bottom: 20px;
         }
+        .highlight {
+            background-color: #e7f1ff;
+            padding: 15px;
+            border-left: 5px solid #007bff;
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #007bff;
+        }
         .back-button {
             margin-top: 30px;
+            text-align: center;
+        }
+        /* 왼쪽에 광고 위치 */
+        .left-ad {
+            position: fixed;
+            top: 100px;
+            left: 0;
+            width: 300px;  /* 광고의 너비 */
+            height: 250px; /* 광고의 높이 */
+            background-color: #f1f1f1;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        /* QR 코드 무상 제공 강조 */
+        .qr-highlight {
+            background-color: #ffeb3b;
+            padding: 15px;
+            border-left: 5px solid #ff9800;
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #ff5722;
+            font-weight: bold;
             text-align: center;
         }
     </style>
 </head>
 <body>
+
+    <!-- 왼쪽에 광고 위치 -->
+    <div class="left-ad">
+        <ins class="kakao_ad_area" style="display:none;"
+        data-ad-unit="DAN-Y0ZNLuIjfBEOujr3"
+        data-ad-width="300"
+        data-ad-height="250"></ins>
+        <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+    </div>
 
     <!-- Header Section -->
     <div class="header">
@@ -66,9 +109,24 @@
             <li><strong>브라우저 호환성:</strong> 모든 주요 브라우저에서 사용 가능하며, 모바일과 데스크톱 환경에서도 최적화된 링크를 제공합니다.</li>
         </ul>
 
+        <!-- QR 코드 무상 제공 강조 -->
+        <div class="qr-highlight">
+            <p>생성된 단축 URL과 함께 QR 코드도 무상으로 제공됩니다!</p>
+        </div>
+
+        <h2>통계 사용 방법</h2>
+        <div class="highlight">
+            <p><strong>1. 단축 URL 생성:</strong> 긴 URL을 입력하여 단축 URL을 생성하세요.</p>
+            <p><strong>2. 통계 확인:</strong> 생성된 단축 URL 뒤에 <code>*</code>를 추가하여 해당 URL의 통계 데이터를 확인할 수 있습니다. 예시: <code>https://11e.kr/abc123*</code></p>
+            <p><strong>3. 실시간 데이터 분석:</strong> 통계 페이지에서 클릭 수, 유입 경로, 브라우저 정보, IP 주소 등의 데이터를 실시간으로 확인할 수 있습니다.</p>
+            <p><strong>4. 엑셀로 다운로드:</strong> 통계 데이터를 엑셀 파일로 다운로드하여 더 깊이 있는 분석이 가능합니다.</p>
+        </div>
+
+        <h2>통계 데이터 제공</h2>
+        <p>저희 서비스는 사용자에게 실시간으로 통계 데이터를 제공합니다. 각 단축 URL에 대한 클릭 수, 유입 경로, 브라우저 정보, IP 주소 등의 데이터를 실시간으로 확인할 수 있으며, 이러한 데이터는 마케팅 전략을 수립하는 데 큰 도움이 됩니다.</p>
+
         <h2>향후 계획</h2>
-        <p>저희 서비스는 앞으로 회원별로 링크를 관리하고, 각 링크에 대한 더 자세한 통계 데이터를 제공할 예정입니다. 이를 통해 링크별 클릭 수, 유입 경로, 사용자 지역 정보 등 마케팅 전략을 수립하는 데 도움이 되는 다양한 분석 데이터를 제공할 계획입니다.</p>
-        <p>사용자별 마케팅 대시보드를 통해 모든 링크의 성과를 쉽게 모니터링할 수 있도록 준비하고 있으니 많은 기대 바랍니다!</p>
+        <p>향후에는 회원별로 링크를 관리할 수 있는 기능과 더 자세한 분석 도구를 제공할 예정입니다. 이를 통해 사용자는 자신의 링크 성과를 더욱 체계적으로 관리하고 분석할 수 있을 것입니다.</p>
 
         <h2>자주 묻는 질문 (FAQ)</h2>
         <p><strong>Q: 이 서비스는 무료인가요?</strong></p>
@@ -78,7 +136,7 @@
         <p>A: 단축된 URL은 영구적으로 유지됩니다.</p>
         
         <p><strong>Q: 통계 데이터는 언제부터 제공되나요?</strong></p>
-        <p>A: 통계 데이터 제공 기능은 곧 추가될 예정이며, 사용자는 자신의 링크에 대한 클릭 수와 유입 경로 등을 확인할 수 있게 됩니다.</p>
+        <p>A: 현재 통계 데이터 제공 기능이 활성화되어 있으며, 각 URL에 대한 클릭 수, 유입 경로 등을 실시간으로 확인할 수 있습니다.</p>
 
         <!-- Back to Main Page Button -->
         <div class="back-button">

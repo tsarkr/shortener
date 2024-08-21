@@ -2,35 +2,39 @@
 session_start();
 include 'database.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+// 오류 메시지 출력 활성화 (디버깅용)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-    // 사용자 조회
-    $stmt = $pdo->prepare("SELECT id, password, role, is_approved FROM users WHERE username = :username");
-    $stmt->execute(['username' => $username]);
-    $user = $stmt->fetch();
+// 로그인 처리
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['password'])) {
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
 
-    // 비밀번호 및 승인 상태 확인
-    if ($user && password_verify($password, $user['password'])) {
-        if ($user['is_approved']) {
-            // 세션 설정
+    // 데이터베이스에서 사용자 검색
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username LIMIT 1");
+        $stmt->execute(['username' => $username]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user && password_verify($password, $user['password'])) {
+            // 비밀번호 검증 성공 -> 세션 설정
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_role'] = $user['role'];
 
-            // 로그인 성공 후 역할에 따라 리디렉션
-            if ($user['role'] === 'admin') {
-                header("Location: admin_dashboard.php");
-            } else {
-                header("Location: user_dashboard.php");  // 일반 사용자용 페이지로 리디렉션
-            }
+            // 로그인 성공 시 리디렉션 (예: 대시보드 페이지)
+            header("Location: admin_dashboard.php");
             exit;
         } else {
-            echo '계정이 아직 승인되지 않았습니다.';
+            // 사용자명 또는 비밀번호가 잘못된 경우
+            $error_message = "사용자명 또는 비밀번호가 잘못되었습니다.";
         }
-    } else {
-        echo '사용자명 또는 비밀번호가 잘못되었습니다.';
+    } catch (PDOException $e) {
+        die("데이터베이스 오류: " . $e->getMessage());
     }
+} else {
+    $error_message = "사용자명 또는 비밀번호를 입력하세요.";
 }
 ?>
 
@@ -41,20 +45,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로그인</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 400px;
+            margin-top: 100px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h2>로그인</h2>
-        <form method="POST">
+    <div class="container">
+        <h2 class="text-center">로그인</h2>
+        <?php if (isset($error_message)): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($error_message) ?></div>
+        <?php endif; ?>
+        <form method="POST" action="login.php">
             <div class="form-group">
                 <label for="username">사용자명</label>
-                <input type="text" name="username" id="username" class="form-control" required>
+                <input type="text" class="form-control" id="username" name="username" required>
             </div>
             <div class="form-group">
                 <label for="password">비밀번호</label>
-                <input type="password" name="password" id="password" class="form-control" required>
+                <input type="password" class="form-control" id="password" name="password" required>
             </div>
-            <button type="submit" class="btn btn-primary">로그인</button>
+            <button type="submit" class="btn btn-primary btn-block">로그인</button>
         </form>
     </div>
 </body>

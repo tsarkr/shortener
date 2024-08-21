@@ -1,4 +1,7 @@
 <?php
+// 출력 버퍼링 시작
+ob_start();
+
 include 'database.php';
 
 function incrementClickCount($shortCode, $referer) {
@@ -35,6 +38,23 @@ function getOriginalUrl($shortCode) {
 
 if (isset($_GET['code'])) {
     $shortCode = $_GET['code'];
+
+    // 단축 URL 뒤에 '*'이 있는지 확인
+    if (substr($shortCode, -1) === '*') {
+        // '*'을 제거하고 통계 페이지로 리디렉션
+        $shortCode = rtrim($shortCode, '*');
+        
+        // 리디렉션 URL을 확인
+        $redirectUrl = "url_statistics.php?short_code=" . $shortCode;
+        error_log("Redirecting to: " . $redirectUrl);  // 서버 로그에 기록
+        header("Location: " . $redirectUrl);
+        
+        // 출력 버퍼링 종료
+        ob_end_flush();
+        exit;
+    }
+
+    // 원래 URL 가져오기
     $originalUrl = getOriginalUrl($shortCode);
 
     if ($originalUrl) {
@@ -46,9 +66,15 @@ if (isset($_GET['code'])) {
 
         // 원래 URL로 리디렉션
         header("Location: " . $originalUrl);
+
+        // 출력 버퍼링 종료
+        ob_end_flush();
         exit;
     } else {
         echo "URL not found!";
     }
 }
+
+// 출력 버퍼링 종료
+ob_end_flush();
 ?>
