@@ -3,7 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>URL 단축기</title>
+    <title>11e.kr | URL 단축기 - 빠르고 쉬운 URL 단축 서비스</title>
+    
+    <!-- Meta Description for SEO -->
+    <meta name="description" content="11e.kr에서 긴 URL을 짧고 간결한 링크로 변환하세요. 무료로 제공되는 QR 코드와 클릭 통계까지 확인할 수 있습니다.">
+    
+    <!-- Meta Keywords for SEO -->
+    <meta name="keywords" content="URL 단축기, 짧은 링크, QR 코드, 클릭 통계, 무료 URL 단축">
+    
+    <!-- Open Graph for Social Sharing -->
+    <meta property="og:title" content="11e.kr | URL 단축기">
+    <meta property="og:description" content="긴 URL을 짧게 만들고 QR 코드와 클릭 통계를 확인하세요.">
+    <meta property="og:image" content="https://11e.kr/images/og-image.png">  <!-- 대표 이미지 경로 설정 -->
+    <meta property="og:url" content="https://11e.kr">
+    
+    <!-- Twitter Card for Social Sharing -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="11e.kr | URL 단축기">
+    <meta name="twitter:description" content="긴 URL을 짧게 만들고 QR 코드와 클릭 통계를 확인하세요.">
+    <meta name="twitter:image" content="https://11e.kr/images/twitter-image.png"> <!-- 대표 이미지 경로 설정 -->
+
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Google Tag Manager -->

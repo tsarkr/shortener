@@ -1,0 +1,12 @@
+User-agent: *
+Disallow: /qrcode/         # QR 코드 관련 디렉토리 크롤링 금지
+Disallow: /vendor/         # 외부 라이브러리 디렉토리 크롤링 금지
+Disallow: /login.php       # 로그인 페이지 크롤링 금지
+Disallow: /logout.php      # 로그아웃 페이지 크롤링 금지
+Disallow: /register.php    # 회원가입 페이지 크롤링 금지
+Disallow: /database.sql    # 데이터베이스 백업 파일 크롤링 금지
+Disallow: /admin.php       # 관리자 로그인 페이지 크롤링 금지
+Disallow: /admin_dashboard.php # 관리자 대시보드 크롤링 금지
+Disallow: /analysis.php    # 분석 페이지 크롤링 금지
+Disallow: /database.php    # 데이터베이스 연결 파일 크롤링 금지
+Disallow: /redirect.php    # 리디렉션 처리 파일 크롤링 금지
