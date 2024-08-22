@@ -4,7 +4,7 @@ ob_start();
 
 include 'database.php';
 
-function incrementClickCount($shortCode, $referer) {
+function incrementClickCount($shortCode, $referer, $userAgent, $ipAddress) {
     global $pdo;
 
     try {
@@ -12,9 +12,21 @@ function incrementClickCount($shortCode, $referer) {
         $stmt = $pdo->prepare("UPDATE urls SET click_count = click_count + 1 WHERE short_code = :code");
         $stmt->execute(['code' => $shortCode]);
 
-        // 클릭 발생 시간 및 referer 기록
-        $stmt = $pdo->prepare("INSERT INTO url_clicks (url_id, referer) VALUES ((SELECT id FROM urls WHERE short_code = :code), :referer)");
-        $stmt->execute(['code' => $shortCode, 'referer' => $referer]);
+        // referer, user_agent, ip_address UTF-8 인코딩 처리
+        $referer = $referer ? mb_convert_encoding($referer, 'UTF-8', 'auto') : null;
+        $userAgent = $userAgent ? mb_convert_encoding($userAgent, 'UTF-8', 'auto') : null;
+
+        // 클릭 발생 시간 및 referer, user_agent, ip_address 기록
+        $stmt = $pdo->prepare("
+            INSERT INTO url_clicks (url_id, referer, user_agent, ip_address) 
+            VALUES ((SELECT id FROM urls WHERE short_code = :code), :referer, :user_agent, :ip_address)
+        ");
+        $stmt->execute([
+            'code' => $shortCode,
+            'referer' => $referer,
+            'user_agent' => $userAgent,
+            'ip_address' => $ipAddress
+        ]);
     } catch (PDOException $e) {
         echo "Query failed: " . $e->getMessage();
         exit;
@@ -60,9 +72,11 @@ if (isset($_GET['code'])) {
     if ($originalUrl) {
         // 참조 URL 가져오기
         $referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
+        $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
+        $ipAddress = $_SERVER['REMOTE_ADDR'];
 
         // 클릭 수 증가 및 참조 URL 기록
-        incrementClickCount($shortCode, $referer);
+        incrementClickCount($shortCode, $referer, $userAgent, $ipAddress);
 
         // 원래 URL로 리디렉션
         header("Location: " . $originalUrl);
