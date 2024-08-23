@@ -19,13 +19,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['p
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['password'])) {
-            // 비밀번호 검증 성공 -> 세션 설정
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_role'] = $user['role'];
+            if ($user['is_approved']) {
+                // 비밀번호 검증 성공 및 승인된 사용자 -> 세션 설정
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_role'] = $user['role'];
 
-            // 로그인 성공 시 리디렉션 (예: 대시보드 페이지)
-            header("Location: admin_dashboard.php");
-            exit;
+                // 로그인 성공 시 리디렉션 (예: 대시보드 페이지)
+                header("Location: admin_dashboard.php");
+                exit;
+            } else {
+                // 계정이 승인되지 않음
+                $error_message = "계정이 아직 승인되지 않았습니다. 관리자의 승인을 기다려주세요.";
+            }
         } else {
             // 사용자명 또는 비밀번호가 잘못된 경우
             $error_message = "사용자명 또는 비밀번호가 잘못되었습니다.";
@@ -69,6 +74,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['p
             </div>
             <button type="submit" class="btn btn-primary btn-block">로그인</button>
         </form>
+        <p class="text-center mt-3">
+            계정이 없으신가요? <a href="register.php">회원가입</a>
+        </p>
     </div>
 </body>
 </html>

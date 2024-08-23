@@ -5,8 +5,8 @@ $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     // 사용자 추가 (승인 대기 상태)
@@ -27,16 +27,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원가입</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 400px;
+            margin-top: 100px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h2>회원가입</h2>
+    <div class="container">
+        <h2 class="text-center">회원가입</h2>
         <?php if ($error): ?>
             <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
         <?php elseif ($success): ?>
             <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
         <?php endif; ?>
-        <form method="POST">
+        <form method="POST" action="register.php">
             <div class="form-group">
                 <label for="username">사용자명</label>
                 <input type="text" name="username" id="username" class="form-control" required>
@@ -45,8 +51,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="password">비밀번호</label>
                 <input type="password" name="password" id="password" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-primary">회원가입</button>
+            <button type="submit" class="btn btn-primary btn-block">회원가입</button>
         </form>
+        <p class="text-center mt-3">
+            이미 계정이 있으신가요? <a href="login.php">로그인</a>
+        </p>
     </div>
 </body>
 </html>

@@ -25,6 +25,9 @@ $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $urls = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// 순번 역순 계산
+$index = $totalRows - $offset;
+
 // 수정 및 삭제 요청 처리
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['update_url_id'])) {
@@ -56,24 +59,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>단축 URL 분석</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .copy-btn {
-            margin-left: 10px;
-        }
-        .copy-notice {
-            color: green;
-            font-weight: bold;
-            display: none;
-        }
-        .edit-btn, .delete-btn {
-            margin-left: 10px;
-        }
-        .save-btn {
-            display: none;
-            margin-left: 10px;
-        }
-        .pagination {
-            justify-content: center;
-        }
+        .copy-btn { margin-left: 10px; }
+        .copy-notice { color: green; font-weight: bold; display: none; }
+        .edit-btn, .delete-btn { margin-left: 10px; }
+        .save-btn { display: none; margin-left: 10px; }
+        .pagination { justify-content: center; }
     </style>
 </head>
 <body>
@@ -93,10 +83,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </tr>
             </thead>
             <tbody>
-                <?php $index = $offset + 1; ?>
                 <?php foreach ($urls as $url): ?>
                     <tr>
-                        <td><?= $index++ ?></td>
+                        <td><?= $index-- ?></td>
                         <td>
                             <input type="text" class="form-control" id="shortUrl-<?= htmlspecialchars($url['short_code']) ?>" value="http://11e.kr/<?= htmlspecialchars($url['short_code']) ?>" readonly>
                         </td>

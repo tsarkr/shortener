@@ -9,6 +9,7 @@
         body {
             background-color: #f8f9fa;
             color: #333;
+            margin: 0;
         }
         .header {
             background-color: #007bff;
@@ -65,50 +66,24 @@
             margin-top: 30px;
             text-align: center;
         }
-        /* 왼쪽에 광고 위치 */
-        .left-ad {
-            position: fixed;
-            top: 100px;
-            left: 0;
-            width: 300px;
-            height: 250px;
+        /* 광고 스타일 */
+        .ad-container {
+            width: 100%;
             background-color: #f1f1f1;
-            padding: 10px;
+            padding: 10px 0;
             text-align: center;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        /* 닫기 버튼 스타일 */
-        .close-ad {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: #ff0000;
-            color: white;
-            border: none;
-            padding: 5px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        @media (max-width: 576px) {
-            .left-ad {
-                width: 100%;
-                height: auto;
-                top: 0;
-                left: 0;
-                box-shadow: none;
-            }
+            margin-bottom: 30px; /* 본문과의 간격을 위해 여백 추가 */
         }
     </style>
 </head>
 <body>
 
-    <!-- 왼쪽에 광고 위치 -->
-    <div class="left-ad" id="adContainer">
-        <button class="close-ad" onclick="closeAd()">X</button>
-        <ins class="kakao_ad_area" style="display:none;"
-        data-ad-unit="DAN-Y0ZNLuIjfBEOujr3"
-        data-ad-width="300"
-        data-ad-height="250"></ins>
+    <!-- 상단 광고 영역 -->
+    <div class="ad-container">
+        <ins class="kakao_ad_area" style="display:block;"
+        data-ad-unit="DAN-bes5g23P3OzvDBK4"
+        data-ad-width="320"
+        data-ad-height="100"></ins>
         <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
     </div>
 
@@ -134,6 +109,14 @@
         <div class="qr-highlight">
             <p>생성된 단축 URL과 함께 QR 코드도 무상으로 제공됩니다!</p>
         </div>
+
+        <h2>사용 방법</h2>
+        <ol>
+            <li><strong>URL 입력:</strong> 메인 페이지에서 긴 URL을 입력하고, "단축" 버튼을 클릭합니다.</li>
+            <li><strong>단축 URL 확인:</strong> 단축된 URL이 생성되며, 이를 복사하여 공유할 수 있습니다. QR 코드도 자동으로 생성되므로, 필요시 함께 사용할 수 있습니다.</li>
+            <li><strong>통계 확인:</strong> 단축된 URL 뒤에 <code>*</code>를 추가하여 해당 URL의 클릭 수와 트래픽 소스를 포함한 통계 데이터를 실시간으로 확인할 수 있습니다. 예시: <code>https://11e.kr/abc123*</code></li>
+            <li><strong>통계 다운로드:</strong> 통계 데이터를 엑셀 파일로 다운로드하여 분석할 수 있습니다. 마케팅 활동에 필요한 데이터를 활용하세요.</li>
+        </ol>
 
         <h2>통계 사용 방법</h2>
         <div class="highlight">
@@ -166,11 +149,5 @@
     </div>
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        function closeAd() {
-            document.getElementById('adContainer').style.display = 'none';
-        }
-    </script>
 </body>
 </html>
