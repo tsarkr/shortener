@@ -16,8 +16,16 @@ use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
 
 include 'database.php'; // 데이터베이스 연결 파일 포함
 
+// PDO 에러 모드를 예외 처리로 설정
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+// 한 페이지에 보여줄 데이터 수
+$limit = 20;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $limit;
+
 // 특정 URL의 통계 데이터를 가져오는 함수
-function getUrlStatistics($shortCode, $pdo) {
+function getUrlStatistics($shortCode, $pdo, $limit, $offset) {
     try {
         $stmt = $pdo->prepare("
             SELECT url_clicks.click_time, url_clicks.referer, url_clicks.user_agent, url_clicks.ip_address 
@@ -25,42 +33,76 @@ function getUrlStatistics($shortCode, $pdo) {
             JOIN urls ON url_clicks.url_id = urls.id 
             WHERE urls.short_code = :short_code
             ORDER BY url_clicks.click_time DESC
+            LIMIT :limit OFFSET :offset
         ");
-        $stmt->execute(['short_code' => $shortCode]);
+        $stmt->bindValue(':short_code', $shortCode, PDO::PARAM_STR);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
-        echo "<p>Error: " . $e->getMessage() . "</p>";
+        // 에러 로그 출력
+        error_log($e->getMessage());
+        echo "<p>데이터베이스 쿼리 오류: " . htmlspecialchars($e->getMessage()) . "</p>";
         return false;
+    }
+}
+
+// 총 데이터 수를 가져오는 함수
+function getTotalStatisticsCount($shortCode, $pdo) {
+    try {
+        $stmt = $pdo->prepare("
+            SELECT COUNT(*) FROM url_clicks 
+            JOIN urls ON url_clicks.url_id = urls.id 
+            WHERE urls.short_code = :short_code
+        ");
+        $stmt->execute(['short_code' => $shortCode]);
+        return $stmt->fetchColumn();
+    } catch (PDOException $e) {
+        // 에러 로그 출력
+        error_log($e->getMessage());
+        echo "<p>데이터베이스 쿼리 오류: " . htmlspecialchars($e->getMessage()) . "</p>";
+        return 0;
     }
 }
 
 // QR 코드 생성 함수
 function generateQrCode($url, $shortCode) {
-    $result = Builder::create()
-        ->writer(new PngWriter())
-        ->data($url)
-        ->encoding(new Encoding('UTF-8'))
-        ->errorCorrectionLevel(new ErrorCorrectionLevelLow())
-        ->size(150)  // QR 코드 크기 조정
-        ->margin(10)
-        ->build();
+    try {
+        $result = Builder::create()
+            ->writer(new PngWriter())
+            ->data($url)
+            ->encoding(new Encoding('UTF-8'))
+            ->errorCorrectionLevel(new ErrorCorrectionLevelLow())
+            ->size(150)  // QR 코드 크기 조정
+            ->margin(10)
+            ->build();
 
-    // QR 코드 이미지를 저장할 디렉토리가 있는지 확인
-    $qr_directory = 'qrcodes/';
-    if (!is_dir($qr_directory)) {
-        mkdir($qr_directory, 0755, true);  // 디렉토리가 없으면 생성
+        // QR 코드 이미지를 저장할 디렉토리가 있는지 확인
+        $qr_directory = 'qrcodes/';
+        if (!is_dir($qr_directory)) {
+            // @ 연산자를 사용하여 디렉토리 생성 시 발생할 수 있는 경고 억제
+            @mkdir($qr_directory, 0775, true);
+        }
+
+        $qr_file = $qr_directory . $shortCode . '.png'; // QR 코드 파일 경로
+        // @ 연산자를 사용하여 파일 저장 시 발생할 수 있는 경고 억제
+        @$result->saveToFile($qr_file); // 파일로 저장
+
+        return $qr_file;
+    } catch (Exception $e) {
+        // 예외 처리 및 로그 출력
+        error_log($e->getMessage());
+        return null;
     }
-
-    $qr_file = $qr_directory . $shortCode . '.png'; // QR 코드 파일 경로
-    $result->saveToFile($qr_file); // 파일로 저장
-
-    return $qr_file;
 }
 
 // short_code 값이 전달되었는지 확인
 if (isset($_GET['short_code']) && !empty($_GET['short_code'])) {
     $shortCode = $_GET['short_code'];
-    $statistics = getUrlStatistics($shortCode, $pdo);
+    $statistics = getUrlStatistics($shortCode, $pdo, $limit, $offset);
+    $totalStatisticsCount = getTotalStatisticsCount($shortCode, $pdo);
+    $totalPages = ceil($totalStatisticsCount / $limit);
 
     // 단축 URL을 생성하여 QR 코드 생성
     $shortened_url = "https://11e.kr/" . $shortCode;
@@ -77,6 +119,25 @@ if (isset($_GET['short_code']) && !empty($_GET['short_code'])) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>URL 통계</title>
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        
+        <!-- Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-GRES32XWER"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-GRES32XWER');
+        </script>
+        <!-- End Google Analytics -->
+        
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-N88DTJJQ');</script>
+        <!-- End Google Tag Manager -->
+        
         <style>
             .container {
                 margin-top: 50px;
@@ -129,6 +190,11 @@ if (isset($_GET['short_code']) && !empty($_GET['short_code'])) {
                 margin-bottom: 20px;
                 text-align: center;
             }
+            /* 페이지네이션 스타일 */
+            .pagination {
+                justify-content: center;
+                margin-top: 20px;
+            }
         </style>
     </head>
     <body>
@@ -154,6 +220,12 @@ if (isset($_GET['short_code']) && !empty($_GET['short_code'])) {
                 </div>
             </div>
 
+            <!-- 엑셀 다운로드 및 index.php 바로가기 -->
+            <div class="btn-container">
+                <a href="url_statistics.php?short_code=<?= htmlspecialchars($shortCode) ?>&download=true" class="btn btn-success">엑셀로 다운로드</a>
+                <a href="index.php" class="btn btn-secondary">메인 페이지로 돌아가기</a>
+            </div>
+
             <?php if ($statistics && count($statistics) > 0): ?>
                 <!-- 통계 데이터 테이블 -->
                 <table class="table table-striped">
@@ -176,19 +248,96 @@ if (isset($_GET['short_code']) && !empty($_GET['short_code'])) {
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+
+                <!-- 페이지네이션 -->
+                <nav>
+                    <ul class="pagination">
+                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                            <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                <a class="page-link" href="url_statistics.php?short_code=<?= htmlspecialchars($shortCode) ?>&page=<?= $i ?>"><?= $i ?></a>
+                            </li>
+                        <?php endfor; ?>
+                    </ul>
+                </nav>
             <?php else: ?>
                 <p class="no-data">통계 데이터가 없습니다.</p>
             <?php endif; ?>
 
-            <!-- 단축 URL 클릭 버튼 및 메인 페이지로 돌아가기 버튼 -->
+        </div>
+    </body>
+    </html>
+    <?php
+} else {
+    ?>
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>잘못된 접근</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-GRES32XWER"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-GRES32XWER');
+        </script>
+        <!-- End Google Analytics -->
+
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-N88DTJJQ');</script>
+        <!-- End Google Tag Manager -->
+
+        <style>
+            .container {
+                margin-top: 50px;
+                text-align: center;
+            }
+            .no-data {
+                font-size: 24px;
+                color: #ff0000;
+                margin-bottom: 20px;
+            }
+            .left-ad {
+                width: 300px;
+                height: 250px;
+                background-color: #f1f1f1;
+                padding: 10px;
+                text-align: center;
+                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+                margin: 20px auto;
+            }
+            .btn-container {
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <p class="no-data">잘못된 접근입니다.</p>
+
+            <!-- 광고 영역 -->
+            <div class="left-ad">
+                <ins class="kakao_ad_area" style="display:none;"
+                data-ad-unit="DAN-Y0ZNLuIjfBEOujr3"
+                data-ad-width="300"
+                data-ad-height="250"></ins>
+                <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+            </div>
+
+            <!-- 메인 페이지로 돌아가기 버튼 -->
             <div class="btn-container">
-                <a href="<?= htmlspecialchars($shortened_url) ?>" class="btn btn-success" target="_blank">단축 URL 클릭</a>
                 <a href="index.php" class="btn btn-secondary">메인 페이지로 돌아가기</a>
             </div>
         </div>
     </body>
     </html>
     <?php
-} else {
-    echo "잘못된 접근입니다.";
 }

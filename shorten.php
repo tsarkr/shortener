@@ -13,6 +13,27 @@ use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
 
 include 'database.php'; // 데이터베이스 연결 파일 포함
 
+// 차단된 도메인 목록 예시
+$blocked_domains = [
+    "pornhub.com",
+    "another-bad-site.com",
+    // 추가 도메인...
+];
+
+// URL이 차단된 도메인에 해당하는지 확인하는 함수
+function isBlockedDomain($url, $blocked_domains) {
+    $parsed_url = parse_url($url);
+    if (isset($parsed_url['host'])) {
+        $host = $parsed_url['host'];
+        foreach ($blocked_domains as $domain) {
+            if (strpos($host, $domain) !== false) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 // 단축 URL 생성 함수가 정의되었는지 확인
 if (!function_exists('generateShortCode')) {
     function generateShortCode($url) {
@@ -28,6 +49,8 @@ function addHttp($url) {
     return $url;
 }
 
+$blocked_message = false; // 차단된 URL 여부 확인용 변수
+
 // POST 요청 및 URL 입력 확인
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['original_url'])) {
     $original_url = trim($_POST['original_url']);
@@ -35,7 +58,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['original_url'])) {
     // URL에 프로토콜 추가 (http:// 또는 https://)
     $original_url = addHttp($original_url);
 
-    if (!empty($original_url)) {
+    // NSFW 필터링
+    if (isBlockedDomain($original_url, $blocked_domains)) {
+        $shortened_url = "해당 URL은 차단된 사이트입니다.";
+        $blocked_message = true; // 차단된 URL 플래그 설정
+    } else if (!empty($original_url)) {
         // 단축 URL 생성
         $shortened_url_code = generateShortCode($original_url);
         $shortened_url = "https://11e.kr/" . $shortened_url_code;
@@ -96,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['original_url'])) {
             width: 100%;
             margin-bottom: 20px;
         }
-        .btn-copy, .btn-download {
+        .btn-copy, .btn-download, .btn-back {
             margin-top: 20px;
         }
         .back-link {
@@ -112,55 +139,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['original_url'])) {
             color: #007bff;
             margin-top: 20px;
         }
+        .qr-ad-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .qr-code {
+            margin-right: 20px;
+        }
         .ad-container {
-            width: 100%;
-            text-align: center;
+            width: 300px;
+            height: 250px;
             background-color: #fff;
-            padding: 10px 0;
+            text-align: center;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
             z-index: 1;
         }
         ins.kakao_ad_area {
             display: block;
             width: 100%;
-            height: 250px;
-        }
-        .qr-code {
-            margin-top: 20px;
+            height: 100%;
         }
     </style>
 </head>
 <body>
     <div class="result-container">
-        <h1>URL 단축 결과</h1>
-        <p>아래에 생성된 단축 URL을 확인하세요.</p>
-        <p>단축된 URL: <a href="<?= htmlspecialchars($shortened_url) ?>" target="_blank"><?= htmlspecialchars($shortened_url) ?></a></p>
-        <button class="btn btn-secondary btn-copy" onclick="copyToClipboard('<?= htmlspecialchars($shortened_url) ?>')">클립보드에 복사</button>
-        <a href="index.php" class="back-link">메인 페이지로 돌아가기</a>
+        <?php if ($blocked_message): ?>
+            <h1>차단된 URL</h1>
+            <p>입력하신 URL은 차단된 사이트로 연결됩니다.</p>
+            <p>이 URL은 단축할 수 없습니다.</p>
+        <?php else: ?>
+            <h1>URL 단축 결과</h1>
+            <p>아래에 생성된 단축 URL을 확인하세요.</p>
+            <p>단축된 URL: <a href="<?= htmlspecialchars($shortened_url) ?>" target="_blank"><?= htmlspecialchars($shortened_url) ?></a></p>
+            <button class="btn btn-secondary btn-copy" onclick="copyToClipboard('<?= htmlspecialchars($shortened_url) ?>')">클립보드에 복사</button>
+            <a href="index.php" class="back-link">메인 페이지로 돌아가기</a>
 
-        <!-- 통계 서비스 설명 추가 -->
-        <div class="highlight">
-            <p>생성된 단축 URL의 통계 데이터를 확인할 수 있습니다. 단축 URL 뒤에 <code>*</code>를 추가하여 클릭 수, 유입 경로, 브라우저 정보 등의 통계 데이터를 실시간으로 확인하세요. 예시: <code>https://11e.kr/abc123*</code></p>
-        </div>
+            <!-- 통계 서비스 설명 추가 -->
+            <div class="highlight">
+                <p>생성된 단축 URL의 통계 데이터를 확인할 수 있습니다. 단축 URL 뒤에 <code>*</code>를 추가하여 클릭 수, 유입 경로, 브라우저 정보 등의 통계 데이터를 실시간으로 확인하세요. 예시: <code>https://11e.kr/abc123*</code></p>
+            </div>
 
-        <!-- QR 코드 이미지 표시 -->
-        <?php if (isset($qr_file)): ?>
-            <div class="qr-code">
-                <p>QR 코드:</p>
-                <img src="<?= htmlspecialchars($qr_file) ?>" alt="QR Code">
-                <br>
-                <a href="<?= htmlspecialchars($qr_file) ?>" download class="btn btn-primary btn-download">QR 코드 다운로드</a>
+            <!-- QR 코드 및 광고 수평 배치 -->
+            <div class="qr-ad-container">
+                <?php if (isset($qr_file)): ?>
+                    <div class="qr-code">
+                        <p>QR 코드:</p>
+                        <img src="<?= htmlspecialchars($qr_file) ?>" alt="QR Code">
+                        <br>
+                        <a href="<?= htmlspecialchars($qr_file) ?>" download class="btn btn-primary btn-download">QR 코드 다운로드</a>
+                    </div>
+                <?php endif; ?>
+                <!-- 하단 광고 -->
+                <div class="ad-container">
+                    <ins class="kakao_ad_area"
+                    data-ad-unit="DAN-Y0ZNLuIjfBEOujr3"
+                    data-ad-width="300"
+                    data-ad-height="250"></ins>
+                    <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+                </div>
             </div>
         <?php endif; ?>
-    </div>
 
-    <!-- 하단 광고 -->
-    <div class="ad-container">
-        <ins class="kakao_ad_area" style="display:block;"
-        data-ad-unit="DAN-Y0ZNLuIjfBEOujr3"
-        data-ad-width="300"
-        data-ad-height="250"></ins>
-        <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+        <!-- 처음으로 돌아가기 버튼 -->
+        <a href="index.php" class="btn btn-secondary btn-back">처음으로 돌아가기</a>
     </div>
 
     <script>
