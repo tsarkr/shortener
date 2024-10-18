@@ -66,6 +66,26 @@ function getTotalStatisticsCount($shortCode, $pdo) {
     }
 }
 
+// 특정 URL의 총 클릭 수와 마지막 클릭 시간을 가져오는 함수
+function getUrlSummary($shortCode, $pdo) {
+    try {
+        $stmt = $pdo->prepare("
+            SELECT COUNT(url_clicks.id) AS click_count, MAX(url_clicks.click_time) AS last_click 
+            FROM url_clicks
+            JOIN urls ON url_clicks.url_id = urls.id
+            WHERE urls.short_code = :short_code
+        ");
+        $stmt->bindValue(':short_code', $shortCode, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // 에러 로그 출력
+        error_log($e->getMessage());
+        echo "<p>데이터베이스 쿼리 오류: " . htmlspecialchars($e->getMessage()) . "</p>";
+        return false;
+    }
+}
+
 // QR 코드 생성 함수
 function generateQrCode($url, $shortCode) {
     try {
@@ -104,6 +124,9 @@ if (isset($_GET['short_code']) && !empty($_GET['short_code'])) {
     $totalStatisticsCount = getTotalStatisticsCount($shortCode, $pdo);
     $totalPages = ceil($totalStatisticsCount / $limit);
 
+    // 단축 URL 요약 정보 (클릭 수 및 마지막 클릭 시간) 가져오기
+    $urlSummary = getUrlSummary($shortCode, $pdo);
+    
     // 단축 URL을 생성하여 QR 코드 생성
     $shortened_url = "https://11e.kr/" . $shortCode;
     $qr_file = generateQrCode($shortened_url, $shortCode);
@@ -201,6 +224,8 @@ if (isset($_GET['short_code']) && !empty($_GET['short_code'])) {
         <div class="container">
             <p class="description">이 통계는 11e.kr에서 제공하는 통계 서비스의 일환으로 제공됩니다.</p>
             <h2>단축 URL: <?= htmlspecialchars($shortCode) ?>의 통계</h2>
+            <p>총 클릭 수: <?= htmlspecialchars($urlSummary['click_count']) ?>회</p>
+            <p>마지막 클릭 시간: <?= htmlspecialchars($urlSummary['last_click']) ?></p>
             <p class="current-time">조회 일시: <?= htmlspecialchars($currentDateTime) ?></p>
 
             <!-- QR 코드 및 광고 -->
