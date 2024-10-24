@@ -41,25 +41,6 @@
     </script>
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GRES32XWER"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-GRES32XWER');  <!-- G-GRES32XWER는 실제 Google Analytics ID로 변경해야 합니다. -->
-    </script>
-    <!-- End Google Analytics -->
-
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-N88DTJJQ');</script>
-    <!-- End Google Tag Manager -->
     
     <style>
         body, html {
@@ -135,11 +116,6 @@
     </style>
 </head>
 <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N88DTJJQ"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-    
     <div class="container shortener-container">
         <div class="shortener-box">
             <h1 class="mb-4 text-center">URL 단축기</h1>
@@ -169,13 +145,6 @@
                 <a href="aboutus.html">서비스 설명</a>
             </div>
 
-            <div class="ad-container">
-                <ins class="kakao_ad_area" style="display:block;"
-                data-ad-unit="DAN-bes5g23P3OzvDBK4"
-                data-ad-width="320"
-                data-ad-height="100"></ins>
-                <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
-            </div>
         </div>
     </div>
 
