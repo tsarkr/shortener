@@ -5,5 +5,3 @@ RewriteRule ^([a-zA-Z0-9]{6})\*$ url_statistics.php?short_code=$1 [L]
 
 # 기본 리디렉션 설정 (6자리 알파벳/숫자 조합)
 RewriteRule ^([a-zA-Z0-9]{6})$ redirect.php?code=$1 [L]
-
-# rsync -avz --delete --exclude={'qrcodes','vendor'} /Users/gyungmin/VS_PRJ/shorten/ root@11e.kr:/var/www/html
