@@ -302,24 +302,6 @@ if (isset($_GET['short_code']) && !empty($_GET['short_code'])) {
         <title>잘못된 접근</title>
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-        <!-- Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-GRES32XWER"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-GRES32XWER');
-        </script>
-        <!-- End Google Analytics -->
-
-        <!-- Google Tag Manager -->
-        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-N88DTJJQ');</script>
-        <!-- End Google Tag Manager -->
-
         <style>
             .container {
                 margin-top: 50px;
@@ -347,15 +329,6 @@ if (isset($_GET['short_code']) && !empty($_GET['short_code'])) {
     <body>
         <div class="container">
             <p class="no-data">잘못된 접근입니다.</p>
-
-            <!-- 광고 영역 -->
-            <div class="left-ad">
-                <ins class="kakao_ad_area" style="display:none;"
-                data-ad-unit="DAN-Y0ZNLuIjfBEOujr3"
-                data-ad-width="300"
-                data-ad-height="250"></ins>
-                <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
-            </div>
 
             <!-- 메인 페이지로 돌아가기 버튼 -->
             <div class="btn-container">
