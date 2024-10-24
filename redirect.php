@@ -77,15 +77,6 @@ if (isset($_GET['code'])) {
 
         // 클릭 수 증가 및 참조 URL 기록
         incrementClickCount($shortCode, $referer, $userAgent, $ipAddress);
-
-        // Google Analytics 추적 코드 삽입
-        echo '<script async src="https://www.googletagmanager.com/gtag/js?id=G-GRES32XWER"></script>';
-        echo '<script>
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag("js", new Date());
-                gtag("config", "G-GRES32XWER");
-                </script>';
         
         // 원래 URL로 리디렉션
         header("Location: " . $originalUrl);
