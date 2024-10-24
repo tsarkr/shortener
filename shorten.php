@@ -192,14 +192,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['original_url'])) {
                         <a href="<?= htmlspecialchars($qr_file) ?>" download class="btn btn-primary btn-download">QR 코드 다운로드</a>
                     </div>
                 <?php endif; ?>
-                <!-- 하단 광고 -->
-                <div class="ad-container">
-                    <ins class="kakao_ad_area"
-                    data-ad-unit="DAN-Y0ZNLuIjfBEOujr3"
-                    data-ad-width="300"
-                    data-ad-height="250"></ins>
-                    <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
-                </div>
             </div>
         <?php endif; ?>
 
