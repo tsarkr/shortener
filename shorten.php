@@ -34,11 +34,14 @@ function isBlockedDomain($url, $blocked_domains) {
     return false;
 }
 
-// 단축 URL 생성 함수가 정의되었는지 확인
-if (!function_exists('generateShortCode')) {
-    function generateShortCode($url) {
-        return substr(md5($url . time()), 0, 6); // 단순 예시: MD5 해시 사용
-    }
+function generateUniqueShortCode($url, $pdo) {
+    do {
+        $shortCode = substr(md5($url . microtime()), 0, 6);
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM urls WHERE short_code = :code");
+        $stmt->execute(['code' => $shortCode]);
+        $exists = $stmt->fetchColumn();
+    } while ($exists > 0);
+    return $shortCode;
 }
 
 // URL이 http:// 또는 https://로 시작하지 않으면 자동으로 추가
@@ -58,13 +61,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['original_url'])) {
     // URL에 프로토콜 추가 (http:// 또는 https://)
     $original_url = addHttp($original_url);
 
-    // NSFW 필터링
-    if (isBlockedDomain($original_url, $blocked_domains)) {
+    // URL 형식 검증 추가
+    if (!filter_var($original_url, FILTER_VALIDATE_URL)) {
+        $shortened_url = "유효한 URL을 입력하세요.";
+    } else if (isBlockedDomain($original_url, $blocked_domains)) {
         $shortened_url = "해당 URL은 차단된 사이트입니다.";
         $blocked_message = true; // 차단된 URL 플래그 설정
     } else if (!empty($original_url)) {
         // 단축 URL 생성
-        $shortened_url_code = generateShortCode($original_url);
+        $shortened_url_code = generateUniqueShortCode($original_url, $pdo);
         $shortened_url = "https://11e.kr/" . $shortened_url_code;
 
         // 데이터베이스에 저장
@@ -85,9 +90,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['original_url'])) {
             ->margin(10)
             ->build();
 
-        // QR 코드 이미지를 저장
-        $qr_file = 'qrcodes/' . $shortened_url_code . '.png'; // QR 코드 파일 경로
-        $result->saveToFile($qr_file); // 파일로 저장
+        // QR 코드 파일 저장 전 'qrcodes' 디렉토리가 있는지 확인하고 없으면 생성
+        if (!is_dir('qrcodes')) {
+            mkdir('qrcodes', 0755, true);
+        }
+        $qr_file = 'qrcodes/' . $shortened_url_code . '.png';
+        $result->saveToFile($qr_file);
     } else {
         $shortened_url = "유효한 URL을 입력하세요.";
     }
@@ -192,6 +200,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['original_url'])) {
                         <a href="<?= htmlspecialchars($qr_file) ?>" download class="btn btn-primary btn-download">QR 코드 다운로드</a>
                     </div>
                 <?php endif; ?>
+                <!-- 하단 광고 -->
+                <div class="ad-container">
+                    <ins class="kakao_ad_area"
+                    data-ad-unit="DAN-Y0ZNLuIjfBEOujr3"
+                    data-ad-width="300"
+                    data-ad-height="250"></ins>
+                    <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+                </div>
             </div>
         <?php endif; ?>
 
