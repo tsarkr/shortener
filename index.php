@@ -134,11 +134,16 @@
                 <p>생성된 단축 URL의 통계 데이터를 확인할 수 있습니다. 단축 URL 뒤에 <code>*</code>를 추가하여 클릭 수, 유입 경로, 브라우저 정보 등의 통계 데이터를 실시간으로 확인하세요. 예시: <code>https://11e.kr/abc123*</code></p>
             </div>
 
+            <?php
+            session_start();
+            if (empty($_SESSION['csrf_token'])) {
+                $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            }
+            ?>
             <form method="POST" action="shorten.php">
-                <div class="form-group">
-                    <input type="text" name="original_url" class="form-control" placeholder="URL을 입력하세요" required>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">단축</button>
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+                <input type="text" name="original_url" class="form-control" placeholder="URL을 입력하세요" required>
+                <button type="submit">단축</button>
             </form>
 
             <div class="footer-links">

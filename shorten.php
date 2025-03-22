@@ -1,4 +1,11 @@
 <?php
+session_start();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'] ?? '')) {
+        die('잘못된 접근입니다 (CSRF).');
+    }
+}
+
 // 오류 메시지 출력 활성화 (디버깅용)
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
