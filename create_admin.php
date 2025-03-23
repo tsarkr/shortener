@@ -2,8 +2,8 @@
 include 'database.php';
 
 // 관리자 계정 정보
-$username = '******';
-$password = '********';
+$username = 'admin';
+$password = 'admin123';
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
 try {
