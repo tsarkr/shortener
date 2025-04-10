@@ -24,8 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['p
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_role'] = $user['role'];
 
-                // 로그인 성공 시 리디렉션 (예: 대시보드 페이지)
-                header("Location: admin_dashboard.php");
+                // 로그인 성공 후 리디렉션
+                $redirectUrl = $_SESSION['redirect_after_login'] ?? 'admin_dashboard.php'; // 저장된 URL 또는 기본값
+                unset($_SESSION['redirect_after_login']); // 세션에서 URL 제거
+                header("Location: $redirectUrl");
                 exit;
             } else {
                 // 계정이 승인되지 않음

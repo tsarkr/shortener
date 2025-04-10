@@ -4,6 +4,7 @@ include 'database.php';
 
 // 관리자 권한 확인
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
+    $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI']; // 현재 페이지 URL 저장
     header("Location: login.php");
     exit;
 }
