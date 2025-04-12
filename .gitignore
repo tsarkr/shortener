@@ -1,1 +1,4 @@
-/.DS_Store
+config.php
+.env
+vendor/
+.DS_Store

@@ -1,5 +1,6 @@
 <?php
 session_start();
+$config = require_once __DIR__ . '/config.php';  // 설정 파일 로드
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'] ?? '')) {
         die('잘못된 접근입니다 (CSRF).');
@@ -220,10 +221,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['original_url'])) {
                 <?php endif; ?>
                 <!-- 하단 광고 -->
                 <div class="ad-container">
-                    <ins class="kakao_ad_area"
-                    data-ad-unit="DAN-Y0ZNLuIjfBEOujr3"
-                    data-ad-width="300"
-                    data-ad-height="250"></ins>
+                    <ins class="kakao_ad_area" style="display:none;"
+                        data-ad-unit="<?php echo htmlspecialchars($config['ads']['kakao']['result']['unit']); ?>"
+                        data-ad-width="<?php echo $config['ads']['kakao']['result']['width']; ?>"
+                        data-ad-height="<?php echo $config['ads']['kakao']['result']['height']; ?>"></ins>
                     <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
                 </div>
             </div>

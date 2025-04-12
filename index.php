@@ -90,6 +90,9 @@
 </head>
 <body>
     <?php
+    // 파일 상단에 설정 파일 로드
+    $config = require_once __DIR__ . '/config.php';
+
     session_start();
     if (empty($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -140,16 +143,16 @@
             <div class="ad-container mt-4 mb-4">
                 <div class="text-center">
                     <ins class="kakao_ad_area" style="display:none;"
-                        data-ad-unit = "DAN-bes5g23P3OzvDBK4"
-                        data-ad-width = "320"
-                        data-ad-height = "100"></ins>
+                        data-ad-unit = "<?php echo htmlspecialchars($config['ads']['kakao']['main']['unit']); ?>"
+                        data-ad-width = "<?php echo $config['ads']['kakao']['main']['width']; ?>"
+                        data-ad-height = "<?php echo $config['ads']['kakao']['main']['height']; ?>"></ins>
                     <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
                 </div>
             </div>
 
             <!-- 서비스 설명 링크 -->
             <div class="text-center mt-4">
-                <a href="aboutus.html" class="text-decoration-none">
+                <a href="aboutus.php" class="text-decoration-none">
                     <small class="text-muted">서비스 설명 <i class="fas fa-chevron-right"></i></small>
                 </a>
             </div>
