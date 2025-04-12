@@ -14,6 +14,11 @@ return [
                 'width' => 320,
                 'height' => 100
             ],
+            'about' => [
+                'unit' => 'YOUR-ABOUT-AD-UNIT',
+                'width' => 320,
+                'height' => 100
+            ],
             'result' => [
                 'unit' => 'YOUR-RESULT-AD-UNIT',
                 'width' => 300,
