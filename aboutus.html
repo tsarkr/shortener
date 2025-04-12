@@ -74,9 +74,33 @@
             text-align: center;
             margin-bottom: 30px; /* 본문과의 간격을 위해 여백 추가 */
         }
+        .top-nav {
+            background: white;
+            padding: 15px;
+            text-align: right;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .language-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .language-divider {
+            margin: 30px 0;
+            border-top: 1px solid #e1e8ed;
+        }
     </style>
 </head>
 <body>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <a href="index.php" class="btn btn-outline-primary">메인으로 돌아가기</a>
+    </div>
 
     <!-- 상단 광고 영역 -->
     <div class="ad-container">
@@ -95,52 +119,63 @@
 
     <!-- Content Section -->
     <div class="container content mt-5">
-        <h2>서비스 개요</h2>
-        <p>우리의 URL 단축 서비스는 긴 URL을 짧고 간결한 링크로 변환해줍니다. 더 짧아진 URL은 쉽게 공유할 수 있으며, 클릭 데이터를 분석하여 마케팅 전략을 세우는 데 유용한 정보를 제공합니다.</p>
+        <!-- 한글 섹션 -->
+        <div class="language-section">
+            <h2>서비스 개요</h2>
+            <p>우리의 URL 단축 서비스는 긴 URL을 짧고 간결한 링크로 변환해줍니다. 더 짧아진 URL은 쉽게 공유할 수 있으며, 클릭 데이터를 분석하여 마케팅 전략을 세우는 데 유용한 정보를 제공합니다.</p>
 
-        <h2>주요 기능</h2>
-        <ul>
-            <li><strong>URL 단축:</strong> 긴 링크를 짧은 링크로 변환하여 공유성을 높입니다.</li>
-            <li><strong>클릭 통계 제공:</strong> 단축된 URL의 클릭 수와 트래픽 소스를 분석하여 유용한 데이터를 제공합니다.</li>
-            <li><strong>브라우저 호환성:</strong> 모든 주요 브라우저에서 사용 가능하며, 모바일과 데스크톱 환경에서도 최적화된 링크를 제공합니다.</li>
-        </ul>
+            <h2>주요 기능</h2>
+            <ul>
+                <li><strong>URL 단축:</strong> 긴 링크를 짧은 링크로 변환하여 공유성을 높입니다.</li>
+                <li><strong>클릭 통계 제공:</strong> 단축된 URL의 클릭 수와 트래픽 소스를 분석합니다.</li>
+                <li><strong>브라우저 호환성:</strong> 모든 주요 브라우저에서 사용 가능합니다.</li>
+                <li><strong>QR 코드 생성:</strong> 모든 단축 URL에 대해 자동으로 QR 코드를 생성합니다.</li>
+                <li><strong>통계 분석:</strong> URL 끝에 * 를 추가하여 상세 통계를 확인할 수 있습니다.</li>
+            </ul>
 
-        <!-- QR 코드 무상 제공 강조 -->
-        <div class="qr-highlight">
-            <p>생성된 단축 URL과 함께 QR 코드도 무상으로 제공됩니다!</p>
+            <div class="highlight">
+                <p>사용 방법</p>
+                <ol>
+                    <li>메인 페이지에서 단축하고 싶은 URL을 입력합니다.</li>
+                    <li>자동으로 생성된 단축 URL과 QR 코드를 받습니다.</li>
+                    <li>단축 URL 끝에 *를 추가하여 클릭 통계를 확인할 수 있습니다.</li>
+                </ol>
+            </div>
+
+            <div class="qr-highlight">
+                <p>생성된 단축 URL과 함께 QR 코드도 무상으로 제공됩니다!</p>
+            </div>
         </div>
 
-        <h2>사용 방법</h2>
-        <ol>
-            <li><strong>URL 입력:</strong> 메인 페이지에서 긴 URL을 입력하고, "단축" 버튼을 클릭합니다.</li>
-            <li><strong>단축 URL 확인:</strong> 단축된 URL이 생성되며, 이를 복사하여 공유할 수 있습니다. QR 코드도 자동으로 생성되므로, 필요시 함께 사용할 수 있습니다.</li>
-            <li><strong>통계 확인:</strong> 단축된 URL 뒤에 <code>*</code>를 추가하여 해당 URL의 클릭 수와 트래픽 소스를 포함한 통계 데이터를 실시간으로 확인할 수 있습니다. 예시: <code>https://11e.kr/abc123*</code></li>
-            <li><strong>통계 다운로드:</strong> 통계 데이터를 엑셀 파일로 다운로드하여 분석할 수 있습니다. 마케팅 활동에 필요한 데이터를 활용하세요.</li>
-        </ol>
+        <div class="language-divider"></div>
 
-        <h2>통계 사용 방법</h2>
-        <div class="highlight">
-            <p><strong>1. 단축 URL 생성:</strong> 긴 URL을 입력하여 단축 URL을 생성하세요.</p>
-            <p><strong>2. 통계 확인:</strong> 생성된 단축 URL 뒤에 <code>*</code>를 추가하여 해당 URL의 통계 데이터를 확인할 수 있습니다. 예시: <code>https://11e.kr/abc123*</code></p>
-            <p><strong>3. 실시간 데이터 분석:</strong> 통계 페이지에서 클릭 수, 유입 경로, 브라우저 정보, IP 주소 등의 데이터를 실시간으로 확인할 수 있습니다.</p>
-            <p><strong>4. 엑셀로 다운로드:</strong> 통계 데이터를 엑셀 파일로 다운로드하여 더 깊이 있는 분석이 가능합니다.</p>
+        <!-- English Section -->
+        <div class="language-section">
+            <h2>Service Overview</h2>
+            <p>Our URL shortening service converts long URLs into short, concise links. The shortened URLs are easy to share and provide useful analytics data for your marketing strategy.</p>
+
+            <h2>Key Features</h2>
+            <ul>
+                <li><strong>URL Shortening:</strong> Convert long links into short, shareable URLs.</li>
+                <li><strong>Click Analytics:</strong> Track clicks and analyze traffic sources.</li>
+                <li><strong>Browser Compatibility:</strong> Works across all major browsers.</li>
+                <li><strong>QR Code Generation:</strong> Automatically generates QR codes for all shortened URLs.</li>
+                <li><strong>Statistics Analysis:</strong> Add * at the end of URL to view detailed statistics.</li>
+            </ul>
+
+            <div class="highlight">
+                <p>How to Use</p>
+                <ol>
+                    <li>Enter the URL you want to shorten on the main page.</li>
+                    <li>Get your automatically generated short URL and QR code.</li>
+                    <li>Add * at the end of the shortened URL to view click statistics.</li>
+                </ol>
+            </div>
+
+            <div class="qr-highlight">
+                <p>Free QR code provided with every shortened URL!</p>
+            </div>
         </div>
-
-        <h2>통계 데이터 제공</h2>
-        <p>저희 서비스는 사용자에게 실시간으로 통계 데이터를 제공합니다. 각 단축 URL에 대한 클릭 수, 유입 경로, 브라우저 정보, IP 주소 등의 데이터를 실시간으로 확인할 수 있으며, 이러한 데이터는 마케팅 전략을 수립하는 데 큰 도움이 됩니다.</p>
-
-        <h2>향후 계획</h2>
-        <p>향후에는 회원별로 링크를 관리할 수 있는 기능과 더 자세한 분석 도구를 제공할 예정입니다. 이를 통해 사용자는 자신의 링크 성과를 더욱 체계적으로 관리하고 분석할 수 있을 것입니다.</p>
-
-        <h2>자주 묻는 질문 (FAQ)</h2>
-        <p><strong>Q: 이 서비스는 무료인가요?</strong></p>
-        <p>A: 네, 무료로 사용할 수 있습니다.</p>
-        
-        <p><strong>Q: URL이 얼마나 오래 유지되나요?</strong></p>
-        <p>A: 단축된 URL은 영구적으로 유지됩니다.</p>
-        
-        <p><strong>Q: 통계 데이터는 언제부터 제공되나요?</strong></p>
-        <p>A: 현재 통계 데이터 제공 기능이 활성화되어 있으며, 각 URL에 대한 클릭 수, 유입 경로 등을 실시간으로 확인할 수 있습니다.</p>
 
         <!-- Back to Main Page Button -->
         <div class="back-button">

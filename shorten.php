@@ -42,13 +42,24 @@ function isBlockedDomain($url, $blocked_domains) {
 }
 
 function generateUniqueShortCode($url, $pdo) {
+    // 먼저 동일한 URL이 있는지 확인
+    $stmt = $pdo->prepare("SELECT short_code FROM urls WHERE original_url = :url LIMIT 1");
+    $stmt->execute(['url' => $url]);
+    $existingCode = $stmt->fetchColumn();
+    
+    if ($existingCode) {
+        return ['code' => $existingCode, 'isNew' => false];
+    }
+    
+    // 새로운 URL인 경우 새 코드 생성
     do {
         $shortCode = substr(md5($url . microtime()), 0, 6);
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM urls WHERE short_code = :code");
         $stmt->execute(['code' => $shortCode]);
         $exists = $stmt->fetchColumn();
     } while ($exists > 0);
-    return $shortCode;
+    
+    return ['code' => $shortCode, 'isNew' => true];
 }
 
 // URL이 http:// 또는 https://로 시작하지 않으면 자동으로 추가
@@ -61,53 +72,53 @@ function addHttp($url) {
 
 $blocked_message = false; // 차단된 URL 여부 확인용 변수
 
-// POST 요청 및 URL 입력 확인
+// POST 처리 부분 수정
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['original_url'])) {
     $original_url = trim($_POST['original_url']);
-    
-    // URL에 프로토콜 추가 (http:// 또는 https://)
     $original_url = addHttp($original_url);
 
-    // URL 형식 검증 추가
     if (!filter_var($original_url, FILTER_VALIDATE_URL)) {
         $shortened_url = "유효한 URL을 입력하세요.";
     } else if (isBlockedDomain($original_url, $blocked_domains)) {
         $shortened_url = "해당 URL은 차단된 사이트입니다.";
-        $blocked_message = true; // 차단된 URL 플래그 설정
+        $blocked_message = true;
     } else if (!empty($original_url)) {
-        // 단축 URL 생성
-        $shortened_url_code = generateUniqueShortCode($original_url, $pdo);
+        // 단축 URL 생성 또는 조회
+        $result = generateUniqueShortCode($original_url, $pdo);
+        $shortened_url_code = $result['code'];
         $shortened_url = "https://11e.kr/" . $shortened_url_code;
 
-        // 데이터베이스에 저장
-        try {
-            $stmt = $pdo->prepare("INSERT INTO urls (original_url, short_code) VALUES (:original_url, :short_code)");
-            $stmt->execute(['original_url' => $original_url, 'short_code' => $shortened_url_code]);
-        } catch (PDOException $e) {
-            die("데이터베이스 저장 중 오류 발생: " . $e->getMessage());
+        // 새로운 URL인 경우에만 데이터베이스에 저장
+        if ($result['isNew']) {
+            try {
+                $stmt = $pdo->prepare("INSERT INTO urls (original_url, short_code) VALUES (:original_url, :short_code)");
+                $stmt->execute(['original_url' => $original_url, 'short_code' => $shortened_url_code]);
+            } catch (PDOException $e) {
+                die("데이터베이스 저장 중 오류 발생: " . $e->getMessage());
+            }
         }
 
-        // QR 코드 생성
-        $result = Builder::create()
-            ->writer(new PngWriter())
-            ->data($shortened_url)
-            ->encoding(new Encoding('UTF-8'))
-            ->errorCorrectionLevel(new ErrorCorrectionLevelLow())
-            ->size(150)  // QR 코드 크기를 150으로 설정 (반으로 줄임)
-            ->margin(10)
-            ->build();
-
-        // QR 코드 파일 저장 전 'qrcodes' 디렉토리가 있는지 확인하고 없으면 생성
-        if (!is_dir('qrcodes')) {
-            mkdir('qrcodes', 0755, true);
-        }
+        // QR 코드 파일 경로 확인
         $qr_file = 'qrcodes/' . $shortened_url_code . '.png';
-        $result->saveToFile($qr_file);
-    } else {
-        $shortened_url = "유효한 URL을 입력하세요.";
+        
+        // QR 코드 파일이 없는 경우에만 생성
+        if (!file_exists($qr_file)) {
+            if (!is_dir('qrcodes')) {
+                mkdir('qrcodes', 0755, true);
+            }
+            
+            $result = Builder::create()
+                ->writer(new PngWriter())
+                ->data($shortened_url)
+                ->encoding(new Encoding('UTF-8'))
+                ->errorCorrectionLevel(new ErrorCorrectionLevelLow())
+                ->size(150)
+                ->margin(10)
+                ->build();
+            
+            $result->saveToFile($qr_file);
+        }
     }
-} else {
-    $shortened_url = "단축 URL 생성 중 오류가 발생했습니다.";
 }
 ?>
 
