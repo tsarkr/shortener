@@ -138,28 +138,21 @@ if (isset($_GET['short_code']) && !empty($_GET['short_code'])) {
     <!DOCTYPE html>
     <html lang="ko">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>URL 통계</title>
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-        
-        <!-- Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-GRES32XWER"></script>
+        <?php if ($config['analytics']['google']['enabled']): ?>
+        <!-- Google Analytics 4 -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo htmlspecialchars($config['analytics']['google']['id']); ?>"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-GRES32XWER');
+            gtag('config', '<?php echo htmlspecialchars($config['analytics']['google']['id']); ?>');
         </script>
-        <!-- End Google Analytics -->
-        
-        <!-- Google Tag Manager -->
-        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-N88DTJJQ');</script>
-        <!-- End Google Tag Manager -->
+        <?php endif; ?>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>URL 통계</title>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
         
         <style>
             .container {
@@ -225,7 +218,7 @@ if (isset($_GET['short_code']) && !empty($_GET['short_code'])) {
             <p class="description">이 통계는 11e.kr에서 제공하는 통계 서비스의 일환으로 제공됩니다.</p>
             <h2>단축 URL: <?= htmlspecialchars($shortCode) ?>의 통계</h2>
             <p>총 클릭 수: <?= htmlspecialchars($urlSummary['click_count']) ?>회</p>
-            <p>마지막 클릭 시간: <?= htmlspecialchars($urlSummary['last_click']) ?></p>
+            <p>마지막 클릭 시간: <?= $urlSummary['last_click'] ? htmlspecialchars($urlSummary['last_click']) : '클릭 기록 없음' ?></p>
             <p class="current-time">조회 일시: <?= htmlspecialchars($currentDateTime) ?></p>
 
             <!-- QR 코드 및 광고 -->

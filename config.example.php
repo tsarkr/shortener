@@ -25,5 +25,11 @@ return [
                 'height' => 250
             ]
         ]
+    ],
+    'analytics' => [
+        'google' => [
+            'enabled' => false,
+            'id' => 'YOUR-GA4-ID'
+        ]
     ]
 ];
