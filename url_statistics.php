@@ -259,9 +259,9 @@ if (isset($_GET['short_code']) && !empty($_GET['short_code'])) {
                         <?php foreach ($statistics as $stat): ?>
                             <tr>
                                 <td><?= htmlspecialchars($stat['click_time']) ?></td>
-                                <td><?= htmlspecialchars($stat['referer']) ?></td>
-                                <td><?= htmlspecialchars($stat['user_agent']) ?></td>
-                                <td><?= htmlspecialchars($stat['ip_address']) ?></td>
+                                <td><?= htmlspecialchars($stat['referer'] ?? '') ?></td>
+                                <td><?= htmlspecialchars($stat['user_agent'] ?? '') ?></td>
+                                <td><?= htmlspecialchars($stat['ip_address'] ?? '') ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
